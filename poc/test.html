@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background: #fff;
+    }
+
+    /* --- NOVO SEGMENT CONTROL DESLIZANTE --- */
+    .segment-control {
+      display: flex;
+      position: relative;
+      border: 1px solid #ddd;
+      border-radius: 9999px;
+      overflow: hidden;
+      margin: 12px auto;
+      background: #f5f5f5;
+      padding: 4px;
+      width: fit-content;
+    }
+
+    .segment-control button {
+      /* ... (suas propriedades existentes como padding, border, etc.) ... */
+      flex: 1;
+      padding: 10px 24px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #000;
+      transition: color 0.3s ease;
+      z-index: 1;
+      position: relative;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .segment-control::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 0px; /* A posição é controlada pela transform */
+      width: var(--active-width, 80px); /* Largura inicial, JS ajusta */
+      height: calc(100% - 8px);
+      background: #000;
+      border-radius: 9999px;
+      transition: transform 0.3s ease, width 0.3s ease;
+      transform: translateX(var(--active-offset, 4px)); /* Posição inicial, JS ajusta */
+      z-index: 0;
+    }
+
+    .segment-control button.active {
+      color: #fff;
+    }
+
+    /* --- ABAS E CARROSSEL REATORADO --- */
+    .tab-content {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+    }
+
+    .tab-content.active {
+      display: flex;
+    }
+
+    .carousel-container {
+      flex: 1;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      display: flex;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .carousel-item {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 0 24px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .lottie {
+      width: 100%;
+      max-width: 450px;
+      max-height: 60vh;
+      flex-shrink: 0;
+      object-fit: contain;
+    }
+
+    .carousel-item-text {
+      display: flex;
+      align-items: flex-start;
+      text-align: left;
+      font-size: 16px;
+      color: #222;
+      line-height: 1.5;
+      max-width: 380px;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .carousel-item-text b,
+    .carousel-item-text strong {
+      white-space: nowrap; /* Evita quebra de linha no texto em negrito */
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background-color: #000;
+      color: #fff;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 14px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    /* --- INDICADORES --- */
+    .indicators {
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+      gap: 6px;
+    }
+
+    .indicators div {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ccc;
+    }
+
+    .indicators div.active {
+      background: #000;
+    }
+</style>
+</head>
+<body>
+  <div class="segment-control">
+    <button class="active" onclick="showTab(0)">Cashier</button>
+    <button onclick="showTab(1)">Self-checkout</button>
+  </div>
+
+  <div class="tab-content active">
+    <div class="carousel-container" id="carousel1">
+      <div class="carousel-item">
+        <div class="lottie" id="lottie1-1"></div>
+        <p class="carousel-item-text">
+          <span class="step-number">1</span> Tell the cashier you're paying using <b>"QR Code Payment"</b>.
+        </p>
+      </div>
+      <div class="carousel-item">
+        <div class="lottie" id="lottie1-2"></div>
+        <p class="carousel-item-text">
+          <span class="step-number">2</span> Scan the QR code that will appear on the pinpad.
+        </p>
+      </div>
+    </div>
+    <div class="indicators" id="indicators1">
+      <div class="active"></div>
+      <div></div>
+    </div>
+  </div>
+
+  <div class="tab-content">
+    <div class="carousel-container" id="carousel2">
+      <div class="carousel-item">
+        <div class="lottie" id="lottie2-1"></div>
+        <p class="carousel-item-text">
+          <span class="step-number">1</span> At the self-checkout, select <b>"QR Code"</b> as payment method.
+        </p>
+      </div>
+      <div class="carousel-item">
+        <div class="lottie" id="lottie2-2"></div>
+        <p class="carousel-item-text">
+          <span class="step-number">2</span> Scan the QR code that will appear on the screen.
+        </p>
+      </div>
+    </div>
+    <div class="indicators" id="indicators2">
+      <div class="active"></div>
+      <div></div>
+    </div>
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll(".segment-control button");
+    const tabs = document.querySelectorAll(".tab-content");
+    const segmentControl = document.querySelector(".segment-control");
+
+    function showTab(index) {
+      // 1. Alterna a classe 'active' nos botões e abas
+      buttons.forEach((btn, i) => btn.classList.toggle("active", i === index));
+      tabs.forEach((tab, i) => tab.classList.toggle("active", i === index));
+
+      // 2. Lógica para mover o slider
+      const activeButton = buttons[index];
+      if (activeButton) {
+        const buttonOffsetLeft = activeButton.offsetLeft;
+        const buttonWidth = activeButton.offsetWidth;
+
+        // Atualiza as variáveis CSS que o ::before usa para se posicionar
+        segmentControl.style.setProperty('--active-width', `${buttonWidth}px`);
+        segmentControl.style.setProperty('--active-offset', `${buttonOffsetLeft}px`);
+      }
+    }
+
+    // Garante que a posição inicial seja calculada após o DOM estar pronto
+    document.addEventListener('DOMContentLoaded', () => {
+      showTab(0);
+    });
+
+    // Recalcula em caso de redimensionamento da tela (importante para responsividade)
+    window.addEventListener('resize', () => {
+      const activeIndex = Array.from(buttons).findIndex(btn => btn.classList.contains('active'));
+      if (activeIndex !== -1) {
+        showTab(activeIndex);
+      }
+    });
+
+    // --- Lógica do Carrossel (sem alterações) ---
+    function initCarousel(carouselId, indicatorsId) {
+      const carousel = document.getElementById(carouselId);
+      const indicators = document.querySelectorAll(`#${indicatorsId} div`);
+      const total = indicators.length;
+      let index = 0;
+      let autoPlayInterval;
+      function updateIndicators(newIndex) {
+        indicators.forEach((dot, i) =>
+          dot.classList.toggle("active", i === newIndex)
+        );
+      }
+      function autoPlay() {
+        autoPlayInterval = setInterval(() => {
+          index = (index + 1) % total;
+          carousel.scrollTo({
+            left: carousel.clientWidth * index,
+            behavior: "smooth",
+          });
+          updateIndicators(index);
+        }, 3000);
+      }
+      carousel.addEventListener("scroll", () => {
+        clearTimeout(carousel.scrollTimeout);
+        carousel.scrollTimeout = setTimeout(() => {
+          const newIndex = Math.round(carousel.scrollLeft / carousel.clientWidth);
+          if (newIndex !== index) {
+            index = newIndex;
+            updateIndicators(index);
+          }
+        }, 50);
+      });
+      carousel.addEventListener("touchstart", () => clearInterval(autoPlayInterval));
+      carousel.addEventListener("touchend", autoPlay);
+      updateIndicators(index);
+      autoPlay();
+    }
+
+    initCarousel("carousel1", "indicators1");
+    initCarousel("carousel2", "indicators2");
+
+    function loadLottie(id, path) {
+      lottie.loadAnimation({
+        container: document.getElementById(id),
+        renderer: "svg",
+        loop: true,
+        autoplay: true,
+        path: path
+      });
+    }
+    // Adicionei a tag <b> que faltava no seu HTML original
+    loadLottie("lottie1-1", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_explainer_cashier_upside.json");
+    loadLottie("lottie1-2", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_scan_qr_code.json");
+    loadLottie("lottie2-1", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_explainer_selfcheckout_upside.json");
+    loadLottie("lottie2-2", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_scan_qr_code.json");
+  </script>
+</body>
+</html>
