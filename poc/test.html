@@ -12,6 +12,7 @@
       flex-direction: column;
       height: 100vh;
       background: #fff;
+      overflow-y: hidden;
     }
 
     .segment-control {
@@ -81,6 +82,10 @@
       display: flex;
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
+    }
+
+    .carousel-container::-webkit-scrollbar {
+      display: none;
     }
 
     .carousel-item {
