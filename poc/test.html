@@ -5,18 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
-    body {
+    /* Trava a página para impedir o scroll/bounce no iOS */
+    html, body {
       margin: 0;
       font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
       background: #fff;
       width: 100%;
       height: 100%;
       position: fixed;
       overflow: hidden;
+      /* Desativa gestos de toque como scroll e pinch-zoom na página inteira */
+      touch-action: none;
     }
 
+    body {
+      /* O Body herda as regras acima, mas mantém o flexbox */
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- SEGMENT CONTROL --- */
     .segment-control {
       display: flex;
       position: relative;
@@ -67,6 +75,7 @@
       color: #fff;
     }
 
+    /* --- ABAS E CARROSSEL --- */
     .tab-content {
       flex: 1;
       display: none;
@@ -84,6 +93,8 @@
       display: flex;
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
+      /* Reativa APENAS o gesto de swipe horizontal para o carrossel */
+      touch-action: pan-x;
     }
 
     .carousel-container::-webkit-scrollbar {
