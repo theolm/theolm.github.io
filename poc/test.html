@@ -241,6 +241,9 @@
         const buttonOffsetLeft = activeButton.offsetLeft;
         const buttonWidth = activeButton.offsetWidth;
 
+        const buttonText = activeButton.textContent.trim();
+        sendEventToNative(buttonText);
+
         segmentControl.style.setProperty('--active-width', `${buttonWidth}px`);
         segmentControl.style.setProperty('--active-offset', `${buttonOffsetLeft}px`);
       }
@@ -308,6 +311,12 @@
         autoplay: true,
         path: path
       });
+    }
+
+    function sendEventToNative(event) {
+      window.kmpJsBridge.callNative("fireEvent", event,
+        function (data) {}
+      );
     }
   
     loadLottie("lottie1-1", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_explainer_cashier_upside.json");
