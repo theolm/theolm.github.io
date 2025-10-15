@@ -241,17 +241,13 @@
         const buttonOffsetLeft = activeButton.offsetLeft;
         const buttonWidth = activeButton.offsetWidth;
 
-        const buttonText = activeButton.textContent.trim();
-        sendEventToNative(buttonText);
-
         segmentControl.style.setProperty('--active-width', `${buttonWidth}px`);
         segmentControl.style.setProperty('--active-offset', `${buttonOffsetLeft}px`);
       }
     }
 
-    // --- CORREÇÃO APLICADA AQUI ---
-    // Espera a página inteira carregar (incluindo CSS) antes de posicionar o slider
-    window.addEventListener('load', () => {
+   
+    document.addEventListener('DOMContentLoaded', () => {
       showTab(0);
     });
 
@@ -312,14 +308,6 @@
         autoplay: true,
         path: path
       });
-    }
-
-    function sendEventToNative(event) {
-      if (window.kmpJsBridge && typeof window.kmpJsBridge.callNative === 'function') {
-        window.kmpJsBridge.callNative("fireEvent", event, function (data) {});
-      } else {
-        console.log(`Bridge not available. Event: ${event}`);
-      }
     }
   
     loadLottie("lottie1-1", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_explainer_cashier_upside.json");
