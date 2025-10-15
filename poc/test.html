@@ -249,8 +249,9 @@
       }
     }
 
-   
-    document.addEventListener('DOMContentLoaded', () => {
+    // --- CORREÇÃO APLICADA AQUI ---
+    // Espera a página inteira carregar (incluindo CSS) antes de posicionar o slider
+    window.addEventListener('load', () => {
       showTab(0);
     });
 
@@ -314,9 +315,11 @@
     }
 
     function sendEventToNative(event) {
-      window.kmpJsBridge.callNative("fireEvent", event,
-        function (data) {}
-      );
+      if (window.kmpJsBridge && typeof window.kmpJsBridge.callNative === 'function') {
+        window.kmpJsBridge.callNative("fireEvent", event, function (data) {});
+      } else {
+        console.log(`Bridge not available. Event: ${event}`);
+      }
     }
   
     loadLottie("lottie1-1", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_explainer_cashier_upside.json");
