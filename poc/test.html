@@ -285,6 +285,7 @@
         }, 3000);
       }
       carousel.addEventListener("scroll", () => {
+        window.kmpJsBridge.callNative("fireEvent", JSON.stringify({ message: "scroll", id: carouselId }), null);
         clearTimeout(carousel.scrollTimeout);
         carousel.scrollTimeout = setTimeout(() => {
           const newIndex = Math.round(carousel.scrollLeft / carousel.clientWidth);
@@ -304,6 +305,7 @@
     initCarousel("carousel2", "indicators2");
 
     function loadLottie(id, path) {
+      window.kmpJsBridge.callNative("fireEvent", JSON.stringify({ message: "Hello", id: id, path: path }), null);
       lottie.loadAnimation({
         container: document.getElementById(id),
         renderer: "svg",
@@ -318,8 +320,7 @@
     loadLottie("lottie2-1", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_explainer_selfcheckout_upside.json");
     loadLottie("lottie2-2", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_scan_qr_code.json");
 
-    window.kmpJsBridge.callNative = function (methodName, params, callback) { }
-    window.kmpJsBridge.callNative("fireEvent", JSON.stringify({ message: "Hello" }), null);
+
 
   </script>
 </body>
