@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-<style>
-    html, body {
+  <style>
+    html,
+    body {
       margin: 0;
       font-family: sans-serif;
       background: #fff;
@@ -177,8 +179,9 @@
     .indicators div.active {
       background: #000;
     }
-</style>
+  </style>
 </head>
+
 <body>
   <div class="segment-control">
     <button class="active" onclick="showTab(0)">Cashier</button>
@@ -246,12 +249,12 @@
       }
     }
 
-   
+
     document.addEventListener('DOMContentLoaded', () => {
       showTab(0);
     });
 
-    
+
     window.addEventListener('resize', () => {
       const activeIndex = Array.from(buttons).findIndex(btn => btn.classList.contains('active'));
       if (activeIndex !== -1) {
@@ -259,7 +262,7 @@
       }
     });
 
-   
+
     function initCarousel(carouselId, indicatorsId) {
       const carousel = document.getElementById(carouselId);
       const indicators = document.querySelectorAll(`#${indicatorsId} div`);
@@ -309,11 +312,15 @@
         path: path
       });
     }
-  
+
     loadLottie("lottie1-1", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_explainer_cashier_upside.json");
     loadLottie("lottie1-2", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_scan_qr_code.json");
     loadLottie("lottie2-1", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_explainer_selfcheckout_upside.json");
     loadLottie("lottie2-2", "https://raw.githubusercontent.com/theolm/theolm.github.io/refs/heads/master/poc/lottie_scan_qr_code.json");
+
+    window.kmpJsBridge.callNative("fireEvent", JSON.stringify({ message: "Hello" }), null);
+
   </script>
 </body>
+
 </html>
