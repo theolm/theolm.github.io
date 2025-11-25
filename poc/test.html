@@ -285,7 +285,7 @@
         }, 3000);
       }
       carousel.addEventListener("scroll", () => {
-        window.kmpJsBridge.callNative("fireEvent", JSON.stringify({ message: "scroll", id: carouselId }), null);
+        window.kmpJsBridge.callNative("fireEvent", JSON.stringify({ name: "scroll", params: { id: carouselId } }), null);
         clearTimeout(carousel.scrollTimeout);
         carousel.scrollTimeout = setTimeout(() => {
           const newIndex = Math.round(carousel.scrollLeft / carousel.clientWidth);
@@ -305,7 +305,7 @@
     initCarousel("carousel2", "indicators2");
 
     function loadLottie(id, path) {
-      window.kmpJsBridge.callNative("fireEvent", JSON.stringify({ message: "Hello", id: id, path: path }), null);
+      window.kmpJsBridge.callNative("fireEvent", JSON.stringify({ name: "lottie", params: { id: id, path: path } }), null);
       lottie.loadAnimation({
         container: document.getElementById(id),
         renderer: "svg",
